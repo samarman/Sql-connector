@@ -1,17 +1,13 @@
-import datetime
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-import time
+import ssl
+from email.message import EmailMessage
+import os
 
 
 # Set your email address
 your_email = input('Your email address: ').strip()
 
-# Password
-passwd = input('Password: ').strip()
-
+password = 'ovxfgenlpaddttzp'
 # Set the email recipient
 to_email = input("Please enter the recipient email address: ").strip()
 
@@ -21,34 +17,26 @@ subject = input('Enter the subject: ').strip()
 # Set the file path of the CSV file
 csv_file = input('Please enter the file path: ').strip()
 
-# Set the date and time to send the email
-send_date = datetime.datetime.now().replace(day=1, hour=8, minute=0, second=0, microsecond=0)
-
-# Calculate the number of seconds between the current time and the send time
-time_delta = (send_date - datetime.datetime.now()).total_seconds()
-
-# Wait until the send time
-time.sleep(time_delta)
-
-# Create a MIME message object
-msg = MIMEMultipart()
+msg = EmailMessage()
 msg['Subject'] = subject
 msg['From'] = your_email
 msg['To'] = to_email
+msg.set_content('Your email message')
 
-# Attach the CSV file to the email
-with open(csv_file, 'rb') as f:
-    attachment = MIMEApplication(f.read(), _subtype='csv')
-    attachment.add_header('Content-Disposition', 'attachment', filename=csv_file)
-    msg.attach(attachment)
+# Add the attachment to the email
+attachment_path = '/Users/samarman/Desktop/Python/Ooredoo/Ticketdata.csv'
+with open(attachment_path, 'rb') as f:
+    file_data = f.read()
+    file_name = os.path.basename(attachment_path)
+msg.add_attachment(file_data, maintype='application', subtype='csv', filename=file_name)
 
-# Send the email using SMTP
+# Send the email
 smtp_server = 'smtp.gmail.com'
 smtp_port = 587
-smtp_user = your_email
-smtp_password = passwd
+smtp_username = your_email
+smtp_password = 'qvcbzavuiicqxqff'
 
-with smtplib.SMTP(smtp_server, smtp_port) as server:
-    server.starttls()
-    server.login(smtp_user, smtp_password)
-    server.sendmail(smtp_user, to_email, msg.as_string())
+with smtplib.SMTP(smtp_server, smtp_port) as smtp:
+    smtp.starttls()
+    smtp.login(smtp_username, smtp_password)
+    smtp.send_message(msg)
