@@ -16,7 +16,7 @@ Before you execute this, make sure you have access to the MySQL database. Raise 
 
 It will prompt to put in your credentials, after you do, it creates the csv file in the same directory that your local repo is situated.
 
-# Further info
+## Further info
 
 If you need to change anything in the query, or the database on datamart, you can change the code in your IDE
 
