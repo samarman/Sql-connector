@@ -17,8 +17,24 @@ print("MySQL Database Connection established")
 # Create a cursor object
 cursor = cnx.cursor()
 
-# Query to select all records from the 'ooredoo_ticket' table
-query = f"SELECT TicketID, TicketDescription, TicketStatus, TurnAroundTime/216000 AS TurnAroundTimeHours, CreatedByEmployeeID, CreationDateTimeID, ClosedDateTimeID, TaskDuration, TicketPriority, GlobalRegion, LastModifiedDateTimeID, StartDateID, ClientCountry, SpecialtyName from Odo.SupportTicket Where CreationDateTimeID between '{start_date}' and '{end_date}' and BrandID = '{brand_id}' ORDER BY CreationDateTimeID ASC"
+# Query to select all records from the 'SupportTicket' table
+query = f"""SELECT TicketID, 
+                   TRIM(SUBSTRING_INDEX(TicketDescription, ' - ', 1)) AS TicketSubject, #split the TicketDescription column to subject and email
+                   TRIM(SUBSTRING_INDEX(TicketDescription, ' - ', -1)) AS EmailAddress, 
+                   TicketStatus, 
+                   TurnAroundTime/216000 AS TurnAroundTimeHours, 
+                   CreatedByEmployeeID, 
+                   CreationDateTimeID, 
+                   ClosedDateTimeID, 
+                   TicketPriority, 
+                   GlobalRegion, 
+                   LastModifiedDateTimeID, 
+                   ClientCountry, 
+                   SpecialtyName 
+            FROM Odo.SupportTicket 
+            WHERE CreationDateTimeID BETWEEN '{start_date}' AND '{end_date}' 
+                  AND BrandID = '{brand_id}' 
+            ORDER BY CreationDateTimeID ASC"""
 
 # Execute the query
 cursor.execute(query)
